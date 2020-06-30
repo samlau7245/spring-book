@@ -8,6 +8,8 @@
 
 * [单体项目](/classOne/chapter1/README.md)
 	* [框架设计与准备](/classOne/chapter1/lesson1/README.md)
+		* [构建聚合项目](/classOne/chapter1/lesson1/createProj.md)
+		* [数据库](/classOne/chapter1/lesson1/databse.md)
 	* [SpringBoot补充](/classOne/chapter1/lesson2/README.md)
 	* [登录注册开发](/classOne/chapter1/lesson3/README.md)
 * [集群项目](/classOne/chapter2/README.md)
