@@ -62,6 +62,146 @@
 
 <img src="/assets/images/classOne/10.png">
 
+## 为pom工程添加依赖
+
+* parent 依赖：依赖这个就表示这个项目就是个SpringBoot项目。
+
+```xml
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.1.5.RELEASE</version>
+    <relativePath />
+</parent>
+```
+
+* 设置资源属性：
+
+```xml
+<properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <java.version>1.8</java.version>
+</properties>
+```
+
+* 添加依赖
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter</artifactId>
+        <!-- exclusions 表示要排除的jar包 -->
+        <exclusions>
+            <exclusion>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-logging</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+    <!-- spring-boot-starter-web：表示SpringBoot的web模块 -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-configuration-processor</artifactId>
+        <optional>true</optional>
+    </dependency>
+</dependencies>
+```
+
+## 创建配置文件、启动类
+
+<img src="/assets/images/classOne/18.png">
+
+```java
+package com.imooc;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class,args);
+    }
+}
+```
+
+### 创建一个测试类
+
+<img src="/assets/images/classOne/19.png">
+
+最后可以直接访问：`http://localhost:8080/hello`
+
+# HikariCP连接数据源
+
+> `HikariCP`是官方的工具。[Github](https://github.com/brettwooldridge/HikariCP)
+
+## pom添加依赖
+
+```xml
+<!-- mysql驱动 -->
+<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.20</version>
+</dependency>
+
+<!-- mybatis -->
+<dependency>
+    <groupId>org.mybatis.spring.boot</groupId>
+    <artifactId>mybatis-spring-boot-starter</artifactId>
+    <version>2.1.3</version>
+</dependency>
+```
+
+## 添加配置文件
+
+```yml
+############################################################
+# 配置数据源信息
+############################################################
+spring:
+  datasource:                                           # 数据源的相关配置
+      type: com.zaxxer.hikari.HikariDataSource          # 数据源类型：HikariCP
+      driver-class-name: com.mysql.jdbc.Driver          # mysql驱动
+      url: jdbc:mysql://localhost:3306/foodie-shop-dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+      username: root
+      password: root
+    hikari:
+      connection-timeout: 30000       # 等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 默认:30秒
+      minimum-idle: 5                 # 最小连接数
+      maximum-pool-size: 20           # 最大连接数
+      auto-commit: true               # 自动提交
+      idle-timeout: 600000            # 连接超时的最大时长（毫秒），超时则被释放（retired），默认:10分钟
+      pool-name: DateSourceHikariCP     # 连接池名字
+      max-lifetime: 1800000           # 连接的生命时长（毫秒），超时而且没被使用则被释放（retired），默认:30分钟 1800000ms
+      connection-test-query: SELECT 1
+          
+############################################################
+# mybatis 配置
+############################################################
+mybatis:
+  type-aliases-package: com.imooc.pojo          # 所有POJO类所在包路径,com.imooc.pojo是本项目pojo的路径。
+  mapper-locations: classpath:mapper/*.xml      # mapper映射文件
+
+############################################################
+# web访问端口号  约定：8088
+############################################################
+server:
+  port: 8088
+  tomcat:
+    uri-encoding: UTF-8
+  max-http-header-size: 80KB  
+```
+
+<img src="/assets/images/classOne/20.png">
+
 # IDE快捷键
 
 ## 展开项目目录
