@@ -48,11 +48,11 @@
 现在我们需要创建完成的聚合工程，下面是对应的顶级工程和其子模块的模块名：
 
 * `foodie-dev`: 顶级pom工程
-	* `foodie-dev-common`  : 子模块
-	* `foodie-dev-pojo` : 子模块
-	* `foodie-dev-mapper` : 子模块
-	* `foodie-dev-service` : 子模块
-	* `foodie-dev-api` : 子模块
+	* `foodie-dev-common`  : 子模块,里面存放的是公共的功能。
+	* `foodie-dev-pojo` : 子模块，里面放的是实体类(BO、VO、Entity)。
+	* `foodie-dev-mapper` : 子模块，里面是数据层或DAO层。
+	* `foodie-dev-service` : 子模块，里面存放着业务层。
+	* `foodie-dev-api` : 子模块，接口实现层。
 
 子模块之间的继承关系为：`common` -> `pojo` -> `mapper` -> `service` -> `api`
 
@@ -169,7 +169,7 @@ public class Application {
 spring:
   datasource:                                           # 数据源的相关配置
       type: com.zaxxer.hikari.HikariDataSource          # 数据源类型：HikariCP
-      driver-class-name: com.mysql.jdbc.Driver          # mysql驱动
+      driver-class-name: com.mysql.cj.jdbc.Driver       # mysql驱动
       url: jdbc:mysql://localhost:3306/foodie-shop-dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
       username: root
       password: root
