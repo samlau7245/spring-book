@@ -27,5 +27,6 @@
 	* [IntelliJ IDEA使用](/useage/IntelliJ_IDEA.md)
 	* [MyBatis](/useage/mybatis.md)
 	* [MyBatis Plus 生成器](/useage/mybatis-Plus.md)
+	* [HSSFWorkbook Excel操作](/useage/HSSFWorkbook.md)
 
 ## Fitness后台设计
