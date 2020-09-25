@@ -13,6 +13,7 @@
 			* [构建聚合项目](/classOne/chapter1/lesson1/createProj.md)
 		* [SpringBoot补充](/classOne/chapter1/lesson2/README.md)
 		* [登录注册开发](/classOne/chapter1/lesson3/README.md)
+		* [部署上线](/classOne/chapter1/onLine.md)
 	* [阶段2：单体到集群](/classOne/chapter2/README.md)
 	* [阶段3：分布式架构](/classOne/chapter3/README.md)
 	* [阶段4：SpringCloud](/classOne/chapter4/README.md)

@@ -1,10 +1,7 @@
 
-* [MyBatis Plus](https://baomidou.com/)
-* [代码生成器配置](https://baomidou.com/config/generator-config.html)
-
 # 基础使用
 
-项目整体结构：
+项目整体结构：要把生成出来的`*.xml`文件移到`resources/mapper`中，因为这是`mybatis-plus`默认的露肩，也可以自定义路径。
 
 <img src="/assets/images/useage/01.png"/>
 
@@ -269,3 +266,9 @@ public class Application {
     }
 }
 ```
+
+# 资料
+
+* [MybatisX 快速开发插件](https://baomidou.com/guide/mybatisx-idea-plugin.html)
+* [MyBatis Plus](https://baomidou.com/)
+* [代码生成器配置](https://baomidou.com/config/generator-config.html)
