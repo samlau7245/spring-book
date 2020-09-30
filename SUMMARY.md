@@ -24,10 +24,17 @@
 
 * [错题集](/mistakes/README.md)
 	* [错题集](/mistakes/mitakes.md)
+* [Linux](/Linux/README.md)
+	* [JDK](/Linux/jdk_linux.md)
+	* [Tomcat](/Linux/tomcat_linux.md)
+	* [MariaDB](/Linux/MariaDB.md)
+	* [防火墙](/Linux/firewall.md)
+	* [Nginx](/Linux/Nginx.md)
 * [工具和库使用](/useage/README.md)
 	* [IntelliJ IDEA使用](/useage/IntelliJ_IDEA.md)
 	* [MyBatis](/useage/mybatis.md)
 	* [MyBatis Plus 生成器](/useage/mybatis-Plus.md)
 	* [HSSFWorkbook Excel操作](/useage/HSSFWorkbook.md)
+	
 
 ## Fitness后台设计
