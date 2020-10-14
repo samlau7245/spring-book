@@ -267,6 +267,17 @@ public class Application {
 }
 ```
 
+# 功能使用
+
+## 排除非表字段
+
+```java
+@TableField(exist = false) // false 表明数据库表中没有这字段，默认 true。
+private String email; // 例如：Entity中 email 字段在对应的数据表中没有，这这是本地使用的字段。
+```
+
+### 
+
 # 资料
 
 * [MybatisX 快速开发插件](https://baomidou.com/guide/mybatisx-idea-plugin.html)

@@ -39,6 +39,10 @@ $ systemctl restart iptables
 $ systemctl reload iptables
 ```
 
+> **[warning] 注意**
+>
+> 如果云服务关联了`安全组`，当`iptables`开放某个端口时，也需要在安全组中把端口开放出来。
+
 # 安全组端口开放
 
 安全组就类似与防火墙一样。

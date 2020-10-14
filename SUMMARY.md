@@ -9,7 +9,6 @@
 * [Java架构师体系课](/classOne/README.md)
 	* [阶段1：单体项目](/classOne/chapter1/README.md)
 		* [框架设计与准备](/classOne/chapter1/lesson1/README.md)
-			* [数据库](/classOne/chapter1/lesson1/databse.md)
 			* [构建聚合项目](/classOne/chapter1/lesson1/createProj.md)
 		* [SpringBoot补充](/classOne/chapter1/lesson2/README.md)
 		* [登录注册开发](/classOne/chapter1/lesson3/README.md)
@@ -33,8 +32,11 @@
 * [工具和库使用](/useage/README.md)
 	* [IntelliJ IDEA使用](/useage/IntelliJ_IDEA.md)
 	* [MyBatis](/useage/mybatis.md)
+	* [MyBatis Plus 使用](/useage/mybatis-Plus-use.md)
 	* [MyBatis Plus 生成器](/useage/mybatis-Plus.md)
+	* [日志使用](/useage/logging.md)
+	* [单元测试](/useage/unitTest.md)
 	* [HSSFWorkbook Excel操作](/useage/HSSFWorkbook.md)
-	
+	* [PDMan数据库工具](/useage/databse.md)
 
 ## Fitness后台设计

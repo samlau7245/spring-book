@@ -1,4 +1,9 @@
 
+```sh
+# 仓库代码
+git clone -b 1.0.0 https://gitee.com/SamLearning/foodie-dev.git
+```
+
 构建一个具体的聚合项目简单结构：
 
 <img src="/assets/images/classOne/02.png">
@@ -202,14 +207,3 @@ server:
 
 <img src="/assets/images/classOne/20.png">
 
-# IDE快捷键
-
-## 展开项目目录
-
-* 点击项目根目录 + 按`*`键：展开所有目录结构
-
-<img src="/assets/images/classOne/04.png">
-
-## 文件分屏展示
-
-<img src="/assets/images/classOne/05.png">
