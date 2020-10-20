@@ -250,6 +250,10 @@ MariaDB [mysql]> delete from user where user='';
 Query OK, 0 rows affected (0.000 sec)
 ```
 
+# 定时备份
+
+[定时备份](https://www.cnblogs.com/leechenxiang/p/7110382.html)
+
 # 资料
 
 * [https://mariadb.org](https://mariadb.org)

@@ -157,8 +157,20 @@ $ ./nginx
 ## nginx其他命令
 
 ```sh
-# 停止
+# 手动切换nginx核心配置文件
+$ ./nginx -c
+# 帮助文档
+$ ./nginx -h
+# 版本号
+$ ./nginx -v
+# 版本号 详细
+$ ./nginx -v
+# 检查配置是否正确
+$ ./nginx -t
+# 停止-暴力
 $ ./nginx -s stop
+# 停止-当没有用户使用nginx时才停止nginx
+$ ./nginx -s quit
 # 重新加载
 $ ./nginx -s reload
 ```
@@ -273,7 +285,7 @@ http { # http指令块。针对HTTP网络传输的一些指令设置。
         listen       80; # 监听端口
         server_name  localhost; # localhost、ip、域名
         location / { # 请求路由映射，匹配拦截
-            root   html; # root 请求位置
+            root   html; # root 请求位置， 它是一种路径的匹配规则，可以通过正则去让匹配规则更复杂
             index  index.html index.htm; # index 首页设置
         }
         error_page   500 502 503 504  /50x.html;
@@ -327,44 +339,227 @@ http {
 
 这样重新启动Nginx就直接可以访问89端口服务了。
 
+# 日志切割
+
+## 日志切割-手动
+
+创建`cut_my_log.sh`脚本文件：
+
+```sh
+#!/bin/bash
+
+LOG_PATH="/var/log/nginx"
+RECORD_TIME=$(date -d "yesterday" +%Y-%m-%d+%H:%M)
+PID=/var/run/nginx/nginx.pid
+mv ${LOG_PATH}/access.log ${LOG_PATH}/access.${RECORD_TIME}.log
+mv ${LOG_PATH}/error.log ${LOG_PATH}/error.${RECORD_TIME}.log
+
+#向Nginx主进程发送信号，用于重新打开日志文件
+kill -USR1 `cat $PID`
+```
+
+<img src="/assets/images/classOne/cp1/29.png"/>
+
+为`cut_my_log.sh`添加可执行权限:
+
+```sh
+chmod +x cut_my_log.sh
+```
+
+测试日志切割结果：
+
+<img src="/assets/images/classOne/cp1/28.png"/>
+
+## 日志切割-定时
+
+在定时任务中加多一项任务
+
+```
+*/1 * * * * /usr/local/nginx/sbin/cut_my_log.sh
+```
+
+<img src="/assets/images/classOne/cp1/30.png"/>
+
+# 为静态资源提供服务
+
+现在有如下服务器资源：
+
+<img src="/assets/images/classOne/cp1/31.png"/>
+
+* `/home/imooc`文件夹下是文件资源。
+* `/home/foodie-shop`文件夹下的是网页资源。
+
+通过配置nginx来让外部可以访问，我们可以在`imooc.conf`中加新的`server`监听端口`88`。
+
+```
+# 静态资源服务器
+server {
+    listen       88;
+    server_name  localhost;
+    
+    # 访问网页资源
+    location / {
+        root   /home/foodie-shop;
+        index  index.html;
+    }
+
+    # 访问文件资源
+    location /imooc {
+        root   /home; # 资源目录位置:/home/imooc，imooc路径会直接添加到root后面。
+    }
+}
+```
+
+直接外外部访问:
+
+* 网页： `http://123.456.78.910:88`
+* 文件： `http://123.456.78.910:88/imooc/pic.jpg`
+
+## 别名(alias)
+
+可以通过`alias`替换`root`，给服务器真实路径取个别名。
+
+```
+# 静态资源服务器
+server {
+    listen       88;
+    server_name  localhost;
+    location / {
+        root   /home/foodie-shop;
+        index  index.html;
+    }
+
+    # location /imooc {
+    #     root   /home; 
+    # }
+
+    location /resouces {
+        alias    /home/imooc;
+    }    
+}
+```
+
+直接外外部访问:
+
+* 文件： `http://123.456.78.910:88/resouces/pic.jpg`
+
+## Gzip压缩提升请求效率
+
+编辑`nginx.conf`文件:
+
+```
+http {
+    gzip  on; # 开启 gzip 压缩功能，可以提高传输效率，节约带宽。
+    gzip_min_length 1; # 限制最小压缩。 1 小于1字节(Byte)的文件就不会压缩。
+    gzip_comp_level 3; # 压缩比(1~9,值越大压缩比就越大)，压缩比越大CPU占用就会越多。
+    gzip_types text/plain application/javascript application/x-javascript; # 需要压缩文件的类型
+}
+```
+
+# location匹配规则
+
+## 最普通规则
+
+```
+server {
+    listen       88;
+    server_name  localhost;
+    location / {
+        root   /home/foodie-shop;
+        index  index.html;
+    }
+}
+```
+
+## 精确匹配
+
+`=`：精确匹配。
+
+```
+server {
+    listen       88;
+    server_name  localhost;
+
+    location = / { 
+        root   html;
+        index  index.html index.html;
+    }
+
+    # 精准匹配路径 /imooc/img/face1.png，如果外部网页访问 /imooc/img/face2.png则访问不到资源，因为这个location是精准匹配
+    location = /imooc/img/face1.png {
+        root   /home; 
+    }
+}
+```
+
+## 正则表达式匹配
+
+规则： 是以`~*`去进行匹配，`*`表示不区分大小写。
+
+```
+server {
+    listen       88;
+    server_name  localhost;
+
+    # 当访问`IP:88/xxx.png`的链接已GIF|png|bmp|jpg|jpeg格式结尾，就会去服务器的 /home 路径下找格式文件，它会逐层去找。
+    location ~* \.(GIF|png|bmp|jpg|jpeg) {
+        root   /home;
+    }
+}
+```
+
+规则： 是以`~`去进行匹配，区分大小写。
+
+```
+server {
+    listen       88;
+    server_name  localhost;
+    location ~ \.(GIF|png|bmp|jpg|jpeg) {
+        root   /home;
+    }
+}
+```
+
+规则： 是以`^~`去进行匹配，以某个字符路径开头。
+
+```
+server {
+    listen       88;
+    server_name  localhost;
+    location ^~ /imooc/img {
+        root   /home;
+    }
+}
+```
+
+# DNS域名解析
+
+user->域名->DNS服务器解析域名找到IP->再通过IP去访问服务。
+
+<img src="/assets/images/classOne/cp1/32.png"/>
+
+<img src="/assets/images/classOne/cp1/33.png"/>
+
+```bash
+whereis hosts
+# hosts: /etc/hosts /etc/hosts.deny /etc/hosts.allow
+
+cat /etc/hosts
+# 127.0.0.1 VM_0_6_centos VM_0_6_centos
+# 127.0.0.1 localhost.localdomain localhost  # 默认的 把IP 127.0.0.1 和 localhost 进行了绑定
+# 127.0.0.1 localhost4.localdomain4 localhost4
+# 
+# ::1 VM_0_6_centos VM_0_6_centos
+# ::1 localhost.localdomain localhost
+# ::1 localhost6.localdomain6 localhost6
+```
+
+## SwitchHosts
+
+SwitchHosts 不同的环境可以切换不同的hosts
+
 # 资料
 
 * [CentOS官网](https://www.centos.org/)
 * [nginx 官网 ](http://nginx.org/)
 * [nginx download](http://nginx.org/en/download.html)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
