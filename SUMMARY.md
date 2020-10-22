@@ -45,5 +45,6 @@
 	* [单元测试](/useage/unitTest.md)
 	* [HSSFWorkbook Excel操作](/useage/HSSFWorkbook.md)
 	* [PDMan数据库工具](/useage/databse.md)
+	* [虚拟机使用](/useage/vmware.md)
 
 ## Fitness后台设计

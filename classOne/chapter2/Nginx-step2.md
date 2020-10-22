@@ -365,9 +365,194 @@ server {
 
 # Nginx配置HTTPS域名证书
 
-安装SSL模块
+## 腾讯云
 
-要在nginx中配置HTTPS，就需要安装SSL模块(`http_ssl_module`)。
+[腾讯云- Nginx 服务器证书安装](https://cloud.tencent.com/document/product/400/35244)
+
+### 安装SSL模块
+
+<img src="/assets/images/classOne/cp1/51.png"/>
+
+<img src="/assets/images/classOne/cp1/52.png"/>
+
+安装SSL模块(`http_ssl_module`)。
+
+```sh
+# 安装前先停掉Nginx服务
+/usr/local/nginx/sbin/nginx -s stop
+# cd到源项目
+cd /home/software/nginx-1.18.0/
+# 新增SSL模块
+./configure \
+--prefix=/usr/local/nginx \
+--pid-path=/var/run/nginx/nginx.pid \
+--lock-path=/var/lock/nginx.lock \
+--error-log-path=/var/log/nginx/error.log \
+--http-log-path=/var/log/nginx/access.log \
+--with-http_gzip_static_module \
+--http-client-body-temp-path=/var/temp/nginx/client \
+--http-proxy-temp-path=/var/temp/nginx/proxy \
+--http-fastcgi-temp-path=/var/temp/nginx/fastcgi \
+--http-uwsgi-temp-path=/var/temp/nginx/uwsgi \
+--http-scgi-temp-path=/var/temp/nginx/scgi \
+--with-http_ssl_module
+# 编译
+make
+# 安装
+make install
+```
+
+把下载的SSL证书上传到云服务器`/usr/local/nginx/conf`: 
+
+<img src="/assets/images/classOne/cp1/53.png"/>
+
+### 配置HTTPS
+
+`.conf`配置文件新增一个server:
+
+```
+server {
+   listen 443 ssl; #SSL 访问端口号为 443
+   server_name  imoocdsp.com; #绑定证书的域名
+
+   # 配置ssl证书
+   ssl_certificate      1_www.imoocdsp.com_bundle.crt;
+   # 配置证书秘钥
+   ssl_certificate_key  2_www.imoocdsp.com.key;
+
+   # ssl会话cache
+   ssl_session_cache    shared:SSL:1m;
+   # ssl会话超时时间
+   ssl_session_timeout  5m;
+
+   # 配置加密套件，写法遵循 openssl 标准,固定写法
+   ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+   ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
+   ssl_prefer_server_ciphers on;
+   
+   location / {
+       proxy_pass http://tomcats/;
+       index  index.html index.htm;
+   }
+}
+```
+
+> Nginx 版本为 nginx/1.15.0 以上请使用 listen 443 ssl 代替 listen 443 和 ssl on。
+
+重新启动Nginx服务：
+
+```sh
+./nginx -s reload
+# 查看启动状态
+./nginx -V
+```
+
+访问：`https://imoocdsp.com`，如果访问不了注意看下防火墙和安全组是否把端口开放出来。
+
+如果遇到如下报错：
+
+```
+the "ssl" parameter requires ngx_http_ssl_module in /usr/local/nginx/conf/nginx.conf:122
+```
+
+基本就是重新`make`的代码没有覆盖旧的`nginx`，下面是解决：
+
+* 备份`nginx.conf`。(必要时可删除`/usr/local/nginx`文件夹)
+* 关闭Nginx : `/usr/local/nginx/sbin/nginx -s stop` 
+* 重新make：
+
+```sh
+cd /home/software/nginx-1.18.0/
+
+# 配置 configure
+./configure \
+--prefix=/usr/local/nginx \
+--pid-path=/var/run/nginx/nginx.pid \
+--lock-path=/var/lock/nginx.lock \
+--error-log-path=/var/log/nginx/error.log \
+--http-log-path=/var/log/nginx/access.log \
+--with-http_gzip_static_module \
+--http-client-body-temp-path=/var/temp/nginx/client \
+--http-proxy-temp-path=/var/temp/nginx/proxy \
+--http-fastcgi-temp-path=/var/temp/nginx/fastcgi \
+--http-uwsgi-temp-path=/var/temp/nginx/uwsgi \
+--http-scgi-temp-path=/var/temp/nginx/scgi \
+--with-http_ssl_module
+
+# 将刚刚编译好的nginx覆盖掉原有的nginx （这个时候nginx要停止状态）
+/usr/local/nginx/sbin/nginx -s stop
+cp ./objs/nginx /usr/local/nginx/sbin/
+
+# 启动nginx
+/usr/local/nginx/sbin/nginx
+# 查看安装
+/usr/local/nginx/sbin/nginx -V
+```
+
+# 部署Nginx到云端(动静分离)
+
+* 静态数据：`css、js、html、images、audios、videos...`。
+* 动态数据：API接口。
+
+动静分离特点：
+
+* 分布式：就是把动态API接口、静态资源给分开，基本就是一种分布式的解决方案。
+* 前后端解耦：
+* 静态归Nginx管理
+* 接口服务化。可以为各平台提供服务。
+
+动静分离实现方式：
+
+* CDN： 域名 -> DNS解析出IP -> 访问IP指定服务器中的资源。
+
+<img src="/assets/images/classOne/cp1/54.png"/>
+
+* Nginx：
+
+<img src="/assets/images/classOne/cp1/55.png"/>
+
+动静分离实现问题：
+
+* 跨域问题： 可以通过`SpringBoot`、`Nginx`、`jsonp`去解决。
+* 分布式会话：在集群中的每一次请求都要保证用户的会话都是他去发起的，可以通过`Redis`去解决。
+
+# 测试与日志调试
+
+```sh
+# cd到Tomcat-api 目录
+cd cd /usr/local/tomcat-api/
+# tail 从最后一行往上看，相当于打开文件不会持续监听。
+tail logs/catalina.out
+
+# 持续监听日志，相当于控制台
+tail logs/catalina.out -f
+```
+
+# Nginx增加简单的用户鉴权
+
+```sh
+# 安装http密码工具
+yum install httpd-tools
+# 创建密码库目录
+mkdir /usr/local/nginx/db
+# 创建用户及密码
+htpasswd -c /usr/local/nginx/db/passwd.db usrname
+```
+
+```
+location / {
+    ...    
+    auth_basic "secret";
+    auth_basic_user_file /usr/local/nginx/db/passwd.db;
+    ...
+}
+```
+
+```sh
+# 添加新的用户名、密码到 hotel 数据库
+htpasswd -b  hotel.db root admin
+```
+
 
 
 
