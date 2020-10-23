@@ -17,7 +17,7 @@
 		* [Linux:Nginx 入门](/classOne/chapter2/Nginx.md)
 		* [Linux:Nginx 进阶](/classOne/chapter2/Nginx-step2.md)
 		* [Linux:Keepalived](/classOne/chapter2/Keepalived.md)
-		* [Linux:LVS](/classOne/chapter2/LVS.md)
+		* [Linux:LVS 负载均衡](/classOne/chapter2/LVS.md)
 		* [Linux:Redis](/classOne/chapter2/Redis.md)
 	* [阶段3：分布式架构](/classOne/chapter3/README.md)
 		* [Linux:RabbitMQ](/classOne/chapter3/RabbitMQ.md)
