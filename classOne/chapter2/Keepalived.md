@@ -40,6 +40,20 @@
 *** WARNING - this build will not support IPVS with IPv6. Please install libnl/libnl-3 dev libraries to support IPv6 with IPVS.
 ```
 
+* 如果遇到下面的警告就安装:`yum install gcc`
+
+```
+configure: error: no acceptable C compiler found in $PATH
+```
+
+* 如果遇到下面的警告就安装:`yum -y install openssl-devel`
+
+```
+configure: error: 
+  !!! OpenSSL is not properly installed on your system. !!!
+  !!! Can not include OpenSSL headers files. 
+```
+
 * 编译、安装: `make && make install`
 * 查看安装的位置: 
 
@@ -78,6 +92,8 @@ make: *** [all-recursive] Error 1
 ```
 
 在`netlink-kernel.h`中报错`unknown type name ‘__u32’`，那么就在文件头部添加： `#include <asm/types.h>`，再进行`./configure`往下的步骤。
+
+* 还有其他错误可以:`yum install curl gcc openssl-devel libnl3-devel net-snmp-devel libnfnetlink-devel -y`
 
 # 配置
 

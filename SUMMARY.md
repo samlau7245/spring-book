@@ -20,6 +20,7 @@
 		* [Linux:LVS 负载均衡](/classOne/chapter2/LVS.md)
 		* [Linux:Redis](/classOne/chapter2/Redis.md)
 	* [阶段3：分布式架构](/classOne/chapter3/README.md)
+		* [Redis集成项目](/classOne/chapter3/Redis_proj.md)
 		* [Linux:RabbitMQ](/classOne/chapter3/RabbitMQ.md)
 		* [Linux:Kafka](/classOne/chapter3/Kafka.md)
 	* [阶段4：SpringCloud](/classOne/chapter4/README.md)
