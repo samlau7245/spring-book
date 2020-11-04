@@ -213,6 +213,7 @@ public class MysqlGenerator {
         // 包配置
         PackageConfig pc = new PackageConfig();
         pc.setParent("com.mybatis.example");
+        pc.setEntity("pojo");
         mpg.setPackageInfo(pc);
 
         // 策略配置
@@ -220,6 +221,8 @@ public class MysqlGenerator {
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
         strategy.setEntityLombokModel(true);
+        strategy.setRestControllerStyle(true);
+        strategy.setInclude(scanner("表名，多个英文逗号分割").split(","));
         strategy.setControllerMappingHyphenStyle(true); // 驼峰转连字符
         mpg.setStrategy(strategy);
         mpg.execute();
