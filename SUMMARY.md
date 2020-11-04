@@ -10,8 +10,8 @@
 	* [阶段1：单体项目](/classOne/chapter1/README.md)
 		* [框架设计与准备](/classOne/chapter1/lesson1/README.md)
 			* [构建聚合项目](/classOne/chapter1/lesson1/createProj.md)
-		* [SpringBoot补充](/classOne/chapter1/lesson2/README.md)
-		* [登录注册开发](/classOne/chapter1/lesson3/README.md)
+		* [SpringBoot](/classOne/chapter1/SpringBoot.md)
+		* [业务：用户登录注册](/classOne/chapter1/busi_auth.md)
 		* [部署上线](/classOne/chapter1/onLine.md)
 	* [阶段2：单体到集群](/classOne/chapter2/README.md)
 		* [Linux:Nginx 入门](/classOne/chapter2/Nginx.md)
@@ -47,5 +47,6 @@
 	* [HSSFWorkbook Excel操作](/useage/HSSFWorkbook.md)
 	* [PDMan数据库工具](/useage/databse.md)
 	* [虚拟机使用](/useage/vmware.md)
+	* [集成Swagger2](/useage/swagger2.md)
 
 ## Fitness后台设计
