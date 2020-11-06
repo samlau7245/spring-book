@@ -107,4 +107,23 @@ $ ./startup.sh
 
 **和第一个tomcat一样，也要把`8088`端口加入到`iptables`中**
 
-<img src="/assets/images/classOne/cp1/12.png">
+<img src="/assets/images/classOne/cp1/10.png">
+
+# 在Mac端启动Tomcat
+
+<img src="/assets/images/Linux/01.png">
+
+```sh
+pwd
+# /apache-tomcat-9.0.39/
+chmod -R 777 bin
+cd bin/
+./startup.sh 
+# Using CATALINA_BASE:   /Users/shanliu/apache-tomcat-9.0.39
+# Using CATALINA_HOME:   /Users/shanliu/apache-tomcat-9.0.39
+# Using CATALINA_TMPDIR: /Users/shanliu/apache-tomcat-9.0.39/temp
+# Using JRE_HOME:        /Library/Java/JavaVirtualMachines/jdk1.8.0_201.jdk/Contents/Home
+# Using CLASSPATH:       /Users/shanliu/apache-tomcat-9.0.39/bin/bootstrap.jar:/Users/shanliu/apache-tomcat-9.0.39/bin/tomcat-juli.jar
+# Using CATALINA_OPTS:   
+# Tomcat started.
+```

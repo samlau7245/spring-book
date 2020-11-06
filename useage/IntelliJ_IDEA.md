@@ -6,6 +6,7 @@
 
 * `Ctrl+Alt+O`: 删除代码中无用的 `import`。
 * `Shift+CMD+O` : 查找文件。
+* `CMD+OPT+L` : 格式化。
 
 ## 展开项目目录
 
@@ -44,3 +45,5 @@ public class Users {
     users.setNickname("A");
 }
 ```
+
+* [资料](https://www.cnblogs.com/joyny/p/12640477.html)

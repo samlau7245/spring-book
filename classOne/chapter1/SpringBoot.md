@@ -11,3 +11,17 @@
 * `NOT_SUPPORTED` ：以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。 
 * `NEVER` ：以非事务方式执行，如果当前存在事务，则抛出异常。 
 * `NESTED` ：支持当前事务，如果当前事务存在，则执行一个嵌套事务，如果当前没有事务，就新建一个事务。
+
+## 日期
+
+* `Date ` : 
+* `LocalDate` : 计算日期
+* `LocalTime` : 只有时刻
+* `LocalDateTime` : 计算日期加时刻，`LocalDateTime`相比`Date`更像是一个工具类，就是为了时间操作使用。
+
+* 获取当前时间对象的方式:
+
+```java
+LocalDateTime localDateTime = LocalDateTime.now();
+Date date = new Date();
+```
