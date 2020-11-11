@@ -64,7 +64,23 @@ public class UserBO {
 
 <img src="/assets/images/useage/35.png"/>
 
+* `ApiParam`
 
+```java
+@ApiOperation(value = "获取商品子分类", notes = "获取商品子分类", httpMethod = "GET")
+@GetMapping("/subCat/{rootCatId}")
+public IMOOCJSONResult subCat(
+        @ApiParam(name = "rootCatId", value = "一级分类id", required = true)
+        @PathVariable Integer rootCatId) {
+
+    if (rootCatId == null) {
+        return IMOOCJSONResult.errorMsg("分类不存在");
+    }
+
+    List<CategoryVO> list = categoryService.getSubCatList(rootCatId);
+    return IMOOCJSONResult.ok(list);
+}
+```
 
 
 

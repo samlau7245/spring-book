@@ -25,3 +25,97 @@
 LocalDateTime localDateTime = LocalDateTime.now();
 Date date = new Date();
 ```
+
+## Restful获取接口请求中的参数
+
+<img src="/assets/images/classOne/cp1/105.png">
+
+### @PathVariable
+
+```java
+@GetMapping("/subCat/{rootCatId}")
+public IMOOCJSONResult subCat(@PathVariable Integer rootCatId) {}
+```
+
+### @RequestParam
+
+```java
+@PostMapping("/logout")
+public IMOOCJSONResult logout(@RequestParam String userId) {}
+```
+
+### @RequestBody
+
+```java
+@PostMapping("/login")
+public IMOOCJSONResult login(@RequestBody UserBO userBO) throws Exception {}
+
+public class UserBO {
+    private String username;
+    private String password;
+    private String confirmPassword;
+}
+```
+
+# AOP
+
+依赖：
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-aop</artifactId>
+</dependency>
+```
+
+接入：
+
+```java
+@Aspect
+@Component
+public class ServiceLogAspect {}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
