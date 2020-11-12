@@ -211,12 +211,175 @@ ORDER BY
 >* 多表联查，联查结果与Mybatis多结构体结合(节点、子节点)。
 
 
-# 商品搜索
+# 商品详情
+
+# 商品评价
+
+* 字段脱敏。
+* 多表联查(users items_comments)
+
+#  商品搜索
+
+**后端金额都是以金额为准**
+
+## 商品搜索
+
+* 数据库SQL
+
+```sql
+SELECT
+    i.id AS itemId,
+    i.item_name AS itemName,
+    i.sell_counts AS sellCounts,
+    ii.url AS imgUrl,
+    tempSpec.priceDiscount AS price 
+FROM
+    items i
+    LEFT JOIN items_img ii ON i.id = ii.item_id
+    LEFT JOIN (
+        SELECT
+            item_id,
+            MIN( price_discount ) AS priceDiscount -- 拿到商品的最低价格
+        FROM
+            items_spec 
+        GROUP BY
+            item_id 
+            ) tempSpec ON i.id = tempSpec.item_id -- tempSpec 临时表
+WHERE
+    is_main = 1 
+```
+
+* Mapper
+
+```xml
+<select id="searchItems" resultType="com.imooc.pojo.vo.SearchItemsVO">
+    SELECT
+        i.id AS itemId,
+        i.item_name AS itemName,
+        i.sell_counts AS sellCounts,
+        ii.url AS imgUrl,
+        tempSpec.priceDiscount AS price
+    FROM
+        items i
+        LEFT JOIN items_img ii ON i.id = ii.item_id
+        LEFT JOIN (
+            SELECT
+                item_id,
+                MIN( price_discount ) AS priceDiscount
+            FROM
+                items_spec
+            GROUP BY
+                item_id
+                ) tempSpec ON i.id = tempSpec.item_id -- tempSpec 临时表
+    WHERE
+        is_main = 1
+        <if test="paramsMap.keywords != null and paramsMap.keywords != null">
+            AND i.item_name LIKE '%${paramsMap.keywords}%'
+        </if>
+    ORDER BY
+    <choose>
+        <!--<when test="paramsMap.sort == 'c' "> --> <!-- c：销量优先，因为MyBais中对与 ' 符号识别不了，所以可以用 &quot; 进行转义 -->
+        <when test="paramsMap.sort == &quot;c&quot; ">
+            i.sell_counts DESC
+        </when>
+        <!-- <when test="paramsMap.sort == 'p' "> --> <!-- p：价格优先 -->
+        <when test="paramsMap.sort == &quot;p&quot; ">
+            tempSpec.priceDiscount DESC
+        </when>
+        <otherwise> <!-- k：默认排序 -->
+            i.item_name ASC
+        </otherwise>
+    </choose>
+</select>
+```
+
+## 分类搜索
 
 
+* SQL
 
+```sql
+SELECT
+    i.id AS itemId,
+    i.item_name AS itemName,
+    i.sell_counts AS sellCounts,
+    ii.url AS imgUrl,
+    tempSpec.priceDiscount AS price 
+FROM
+    items i
+    LEFT JOIN items_img ii ON i.id = ii.item_id
+    LEFT JOIN (
+SELECT
+    item_id,
+    MIN( price_discount ) AS priceDiscount 
+FROM
+    items_spec 
+GROUP BY
+    item_id 
+    ) tempSpec ON i.id = tempSpec.item_id -- tempSpec 临时表
+    
+WHERE
+    is_main = 1 
+--  AND i.item_name LIKE '%蛋糕%' 
+    AND i.cat_id = 51
+-- ORDER BY
+    -- i.item_name ASC
+    -- i.sell_counts DESC
+--  tempSpec.priceDiscount DESC
+```
 
+* Mapper
 
+```xml
+<select id="searchItemsByThirdCat" resultType="com.imooc.pojo.vo.SearchItemsVO">
+    SELECT
+    i.id AS itemId,
+    i.item_name AS itemName,
+    i.sell_counts AS sellCounts,
+    ii.url AS imgUrl,
+    tempSpec.priceDiscount AS price
+    FROM
+    items i
+    LEFT JOIN items_img ii ON i.id = ii.item_id
+    LEFT JOIN (
+    SELECT
+    item_id,
+    MIN( price_discount ) AS priceDiscount
+    FROM
+    items_spec
+    GROUP BY
+    item_id
+    ) tempSpec ON i.id = tempSpec.item_id -- tempSpec 临时表
+    WHERE
+    is_main = 1
+    <if test="paramsMap.keywords != null and paramsMap.keywords != null">
+        AND i.cat_id = #{paramsMap.catId}
+    </if>
+    ORDER BY
+    <choose>
+        <!--<when test="paramsMap.sort == 'c' "> --> <!-- c：销量优先，因为MyBais中对与 ' 符号识别不了，所以可以用 &quot; 进行转义 -->
+        <when test="paramsMap.sort == &quot;c&quot; ">
+            i.sell_counts DESC
+        </when>
+        <!-- <when test="paramsMap.sort == 'p' "> --> <!-- p：价格优先 -->
+        <when test="paramsMap.sort == &quot;p&quot; ">
+            tempSpec.priceDiscount DESC
+        </when>
+        <otherwise> <!-- k：默认排序 -->
+            i.item_name ASC
+        </otherwise>
+    </choose>
+</select>
+```
+
+# 购物车
+
+登录情况、未登录情况下保存购物车。
+
+* cookie，无需登录。
+* session，用户会话。优点：因为session是基于服务器内存，当用户量较少的时候比较好。缺点：当用户比较多时，服务器内存负荷比较大；session只能存在单体服务器中。
+* 数据库，创建购物车表来存储购物车里数据。缺点：频繁读取数据库。
+* redis，分布式缓存中间件。
 
 
 
