@@ -381,6 +381,109 @@ WHERE
 * 数据库，创建购物车表来存储购物车里数据。缺点：频繁读取数据库。
 * redis，分布式缓存中间件。
 
+## 刷新购物车商品
+
+* sql 
+
+```sql
+SELECT
+    t_items.id AS itemId,
+    t_items.item_name AS itemName,
+    t_items_img.url AS itemImgUrl,
+    t_items_spec.id AS specId,
+    t_items_spec.`name` AS specName,
+    t_items_spec.price_discount AS priceDiscount,
+    t_items_spec.price_normal AS priceNormal 
+FROM
+    items_spec t_items_spec
+    LEFT JOIN items t_items ON t_items.id = t_items_spec.item_id
+    LEFT JOIN items_img t_items_img ON t_items_img.item_id = t_items.id 
+WHERE
+    t_items_img.is_main = 1 
+    AND t_items_spec.id IN ('cake-48-spec-1','bingan-1001-spec-3')
+```
+
+* Mapper
+
+```java
+public List<ShopcartVO> queryItemsBySpecIds(@Param("paramsList") List specIdsList);
+```
+
+```xml
+<select id="queryItemsBySpecIds" resultType="com.imooc.pojo.vo.ShopcartVO">
+    SELECT
+        t_items.id AS itemId,
+        t_items.item_name AS itemName,
+        t_items_img.url AS itemImgUrl,
+        t_items_spec.id AS specId,
+        t_items_spec.`name` AS specName,
+        t_items_spec.price_discount AS priceDiscount,
+        t_items_spec.price_normal AS priceNormal
+    FROM
+        items_spec t_items_spec
+        LEFT JOIN items t_items ON t_items.id = t_items_spec.item_id
+        LEFT JOIN items_img t_items_img ON t_items_img.item_id = t_items.id
+    WHERE
+        t_items_img.is_main = 1
+        AND t_items_spec.id IN -- ( 'cake-48-spec-1', 'bingan-1001-spec-3' )
+        <foreach collection="paramsList" index="index" item="specId" open="(" separator="," close=")">
+            #{specId}
+        </foreach>
+</select>
+```
+
+# 收货地址
+
+```sql
+CREATE TABLE user_address(
+    id VARCHAR(64) NOT NULL   COMMENT '地址主键id' ,
+    user_id VARCHAR(64) NOT NULL   COMMENT '关联用户id' ,
+    receiver VARCHAR(32) NOT NULL   COMMENT '收件人姓名' ,
+    mobile VARCHAR(32) NOT NULL   COMMENT '收件人手机号' ,
+    province VARCHAR(32) NOT NULL   COMMENT '省份' ,
+    city VARCHAR(32) NOT NULL   COMMENT '城市' ,
+    district VARCHAR(32) NOT NULL   COMMENT '区县' ,
+    detail VARCHAR(128) NOT NULL   COMMENT '详细地址' ,
+    extand VARCHAR(128)    COMMENT '扩展字段' ,
+    is_default INT    COMMENT '是否默认地址 1:是  0:否' ,
+    created_time DATETIME NOT NULL   COMMENT '创建时间' ,
+    updated_time DATETIME NOT NULL   COMMENT '更新时间' ,
+    PRIMARY KEY (id)
+) COMMENT = '用户地址表 ';;
+```
+
+# 订单
+
+简单的支付流程：
+
+<img src="/assets/images/classOne/cp1/106.png">
+
+简单的支付状态流程：
+
+<img src="/assets/images/classOne/cp1/107.png">
+
+订单表设计：
+
+```sql
+CREATE TABLE orders(
+    id VARCHAR(64) NOT NULL   COMMENT '订单主键 同时也是订单编号' ,
+    user_id VARCHAR(64) NOT NULL   COMMENT '用户id' ,
+    receiver_name VARCHAR(32) NOT NULL   COMMENT '收货人快照' ,
+    receiver_mobile VARCHAR(32) NOT NULL   COMMENT '收货人手机号快照' ,
+    receiver_address VARCHAR(128) NOT NULL   COMMENT '收货地址快照' ,
+    total_amount INT NOT NULL   COMMENT '订单总价格' ,
+    real_pay_amount INT NOT NULL   COMMENT '实际支付总价格' ,
+    post_amount INT NOT NULL  DEFAULT 0 COMMENT '邮费 默认可以为零，代表包邮' ,
+    pay_method INT NOT NULL   COMMENT '支付方式 1:微信 2:支付宝' ,
+    left_msg VARCHAR(128)    COMMENT '买家留言' ,
+    extand VARCHAR(32)    COMMENT '扩展字段' ,
+    is_comment INT NOT NULL   COMMENT '买家是否评价 1：已评价，0：未评价' ,
+    is_delete INT NOT NULL  DEFAULT 0 COMMENT '逻辑删除状态 1: 删除 0:未删除' ,
+    created_time DATETIME NOT NULL   COMMENT '创建时间（成交时间）' ,
+    updated_time DATETIME NOT NULL   COMMENT '更新时间' ,
+    PRIMARY KEY (id)
+) COMMENT = '订单表 ';;
+```
 
 
 
@@ -395,14 +498,7 @@ WHERE
 
 
 
-
-
-
-
-
-
-
-
+/Users/shanliu/Documents/github/GitBook/spring-book-master/assets/images/classOne/cp1/
 
 
 
